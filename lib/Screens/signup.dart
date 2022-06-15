@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:splash/Modals/helperfunctions.dart';
 import 'package:splash/Screens/signin.dart';
 import 'package:splash/Services/auth.dart';
 import 'package:splash/Services/db.dart';
@@ -28,8 +29,10 @@ class _SignUpState extends State<SignUp> {
     // if (formKey.currentState!.validate()) {
     Map<String, String> userInfoMap = {
       "name": userNameText.text,
-      "email": emailText.text
+      "email": emailText.text,
     };
+    HelperFunctions.saveUserEmailSharedPreference(emailText.text);
+    HelperFunctions.saveUserNameSharedPreference(userNameText.text);
     setState(() {
       isLoading = true;
     });
@@ -65,17 +68,78 @@ class _SignUpState extends State<SignUp> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Temp.textField(
-                          hintText: 'Username',
-                          editingController: userNameText),
-                      Temp.textField(
-                          hintText: 'email', editingController: emailText),
-                      Temp.textField(
-                          hintText: 'password',
-                          editingController: passwordText),
-                      Temp.textField(
-                          hintText: 'Confirm password',
-                          editingController: cnfmpasswordText),
+                      TextFormField(
+                        style: TextStyle(color: Colors.white),
+                        controller: userNameText,
+                        validator: (val) {
+                          return val!.isEmpty || val.length < 3
+                              ? "Enter Username 3+ characters"
+                              : null;
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'UserName',
+                          hintStyle: TextStyle(color: Colors.white54),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                        ),
+                      ),
+                      TextFormField(
+                        controller: emailText,
+                        style: TextStyle(color: Colors.white),
+                        validator: (val) {
+                          return RegExp(
+                                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(val!)
+                              ? null
+                              : "Enter correct email";
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                          hintStyle: TextStyle(color: Colors.white54),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                        ),
+                      ),
+                      TextFormField(
+                        obscureText: true,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          hintStyle: TextStyle(color: Colors.white54),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                        ),
+                        controller: passwordText,
+                        validator: (val) {
+                          return val!.length < 6
+                              ? "Enter Password 6+ characters"
+                              : null;
+                        },
+                      ),
+                      TextFormField(
+                        obscureText: true,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Confirm Password',
+                          hintStyle: TextStyle(color: Colors.white54),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                        ),
+                        controller: cnfmpasswordText,
+                        validator: (val) {
+                          return cnfmpasswordText != passwordText
+                              ? "Password Mismatch"
+                              : null;
+                        },
+                      ),
                       SizedBox(
                         height: 16,
                       ),

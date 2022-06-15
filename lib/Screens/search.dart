@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:splash/Screens/SearchResult.dart';
 import 'package:splash/Screens/user_data_model.dart';
 import 'package:splash/Services/db.dart';
 import 'package:splash/Widgets/temp.dart';
@@ -16,54 +17,18 @@ class search extends StatefulWidget {
 
 class _searchState extends State<search> {
   Dbfunctions database = new Dbfunctions();
-
+  bool isLoading = false, haveUserSearched = false;
   TextEditingController searchtextcontroller = new TextEditingController();
 
   final CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('users');
-  List<UserDataModel> userDataModel = [];
 
-  Future<void> getData() async {
-    // Get docs from collection reference
-    QuerySnapshot querySnapshot = await _collectionRef.get();
+  List<String> userDataModel = [];
 
-    // Get data from docs and convert map to List
-
-    List<Object?> allData =
-        querySnapshot.docs.map((doc) => doc.data()).toList();
-    allData.map((e) => e['name']);
-    var data = querySnapshot.docs.toList();
-    data.forEach((element) {
-      var datum = element.data().toString();
-    });
-    log(userDataModel.first.email);
-    // print(allData);
-    // var listTitles = allData.map((e) {
-    //   var name = e['name'] ;
-    //   var tit = SearchTitle(userName: , userEmail: userEmail)
-    // }).toList();
-  }
-
-  // Future getData() async {
-  //   QuerySnapshot snapshot =
-  //       await FirebaseFirestore.instance.collection("users").get();
-  //   Widget searchList() {
-  //     return ListView.builder(
-  //         itemCount: snapshot.docs.length,
-  //         itemBuilder: (context, index) {
-  //           return SearchTitle(userName: "", userEmail: "");
-  //         });
-  //   }
-  // }
-
-  // searchResult() {
-  //   getData();
-  //   searchResult() {
-  //     database.searchUser(searchtextcontroller.text).then((val) {
-  //       snapshot = val;
-  //     });
-  //   }
-  // }
+//  createChatRoom(String userName){
+//    List<String> users =[userName];
+//    database.createChatRoom(chatRoomID, chatRoomMap)
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +54,11 @@ class _searchState extends State<search> {
                   )),
                   GestureDetector(
                     onTap: () {
-                      getData();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => searchResult(
+                                  text: searchtextcontroller.text)));
                     },
                     child: Container(
                         padding: EdgeInsets.symmetric(vertical: 8),

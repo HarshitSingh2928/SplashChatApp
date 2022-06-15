@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.redAccent,
             elevation: 10,
           )),
-      home: chatroom(),
+      home: authenticate(),
     );
   }
 }

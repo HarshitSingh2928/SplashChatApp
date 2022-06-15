@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:splash/Screens/chatroom.dart';
 import 'package:splash/Screens/signup.dart';
 import 'package:splash/Services/auth.dart';
+import 'package:splash/Services/db.dart';
 import 'package:splash/Widgets/temp.dart';
 import 'package:splash/Widgets/widget.dart';
+
+import '../Modals/helperfunctions.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggle;
@@ -17,18 +21,34 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  late DocumentSnapshot snapshot;
+  Dbfunctions dbfunctions = new Dbfunctions();
   AuthMethods authMethods = new AuthMethods();
   TextEditingController emailtextcontroller = new TextEditingController();
   TextEditingController passwordtextcontroller = new TextEditingController();
   signUpFun() {
     if (formKey.currentState!.validate()) {
+      HelperFunctions.saveUserEmailSharedPreference(emailtextcontroller.text);
       setState(() {
         isLoading = true;
       });
+      // dbfunctions.searchByEmail(emailtextcontroller.text).then((value) {
+      //   snapshot = value;
+      //   HelperFunctions.saveUserEmailSharedPreference(
+      //       snapshot.data() as String);
+      // });
+
+      // HelperFunctions.saveUserNameSharedPreference(userNameText.text);
       authMethods
           .signInWithEMail(
               emailtextcontroller.text, passwordtextcontroller.text)
-          .then((value) => print("$value.userId"));
+          .then((value) {
+        if (value != null) {
+          HelperFunctions.saveUserLoggedInSharedPreference(true);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => chatroom()));
+        }
+      });
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => chatroom()));
     }
@@ -55,12 +75,41 @@ class _SignInState extends State<SignIn> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Temp.textField(
-                            hintText: 'email',
-                            editingController: emailtextcontroller),
-                        Temp.textField(
-                            hintText: 'password',
-                            editingController: passwordtextcontroller),
+                        TextFormField(
+                          style: TextStyle(color: Colors.white),
+                          controller: emailtextcontroller,
+                          validator: (val) {
+                            return val!.isEmpty || val.length < 3
+                                ? "Enter Username 3+ characters"
+                                : null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                            hintStyle: TextStyle(color: Colors.white54),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white)),
+                          ),
+                        ),
+                        TextFormField(
+                          style: TextStyle(color: Colors.white),
+                          obscureText: true,
+                          controller: passwordtextcontroller,
+                          validator: (val) {
+                            return val!.isEmpty || val.length < 3
+                                ? "Enter Username 3+ characters"
+                                : null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            hintStyle: TextStyle(color: Colors.white54),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white)),
+                          ),
+                        ),
                         SizedBox(
                           height: 8,
                         ),
