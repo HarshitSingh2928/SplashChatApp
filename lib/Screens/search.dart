@@ -38,7 +38,7 @@ class _searchState extends State<search> {
         child: Column(
           children: [
             Container(
-              color: Color(0x54FFFFFF),
+              color: Colors.black,
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 children: [
@@ -61,8 +61,10 @@ class _searchState extends State<search> {
                                   text: searchtextcontroller.text)));
                     },
                     child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Icon(Icons.search)),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Icon(Icons.search),
+                      color: Colors.white,
+                    ),
                   )
                 ],
               ),
