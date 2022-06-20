@@ -7,6 +7,14 @@ class searchResult extends StatelessWidget {
   searchResult({Key? key, required this.text}) : super(key: key);
   final db = FirebaseFirestore.instance;
 
+  void callConversation(BuildContext context, String name, String? uid) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Conversation(frindUid: uid!, friendName: name)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,10 +35,7 @@ class searchResult extends StatelessWidget {
               children: snapshot.data!.docs.map((doc) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Conversation()));
+                    callConversation(context, doc['name'], doc['uid']);
                   },
                   child: Card(
                     color: Colors.red,

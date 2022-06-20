@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:splash/Modals/helperfunctions.dart';
 import 'package:splash/Screens/signin.dart';
@@ -25,12 +26,17 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordText = new TextEditingController();
   TextEditingController cnfmpasswordText = new TextEditingController();
   final formKey = GlobalKey<FormState>();
+
   signUpFun() {
     // if (formKey.currentState!.validate()) {
-    Map<String, String> userInfoMap = {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    Map<String, String?> userInfoMap = {
       "name": userNameText.text,
       "email": emailText.text,
+      "uid": uid,
+      "password": passwordText.text
     };
+
     HelperFunctions.saveUserEmailSharedPreference(emailText.text);
     HelperFunctions.saveUserNameSharedPreference(userNameText.text);
     setState(() {
@@ -215,4 +221,10 @@ class _SignUpState extends State<SignUp> {
             ),
     );
   }
+}
+
+@override
+Widget build(BuildContext context) {
+  // TODO: implement build
+  throw UnimplementedError();
 }

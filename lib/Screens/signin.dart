@@ -26,7 +26,7 @@ class _SignInState extends State<SignIn> {
   AuthMethods authMethods = new AuthMethods();
   TextEditingController emailtextcontroller = new TextEditingController();
   TextEditingController passwordtextcontroller = new TextEditingController();
-  signUpFun() {
+  signInFun() {
     if (formKey.currentState!.validate()) {
       HelperFunctions.saveUserEmailSharedPreference(emailtextcontroller.text);
       setState(() {
@@ -49,8 +49,6 @@ class _SignInState extends State<SignIn> {
               context, MaterialPageRoute(builder: (context) => chatroom()));
         }
       });
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => chatroom()));
     }
   }
 
@@ -129,7 +127,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            signUpFun();
+                            signInFun();
                           },
                           child: Container(
                             alignment: Alignment.center,
